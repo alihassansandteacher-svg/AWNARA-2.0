@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="AWNARA — The Advanced Personal AI Assistant.">
+    <meta name="application-name" content="AWNARA">
+    <meta name="theme-color" content="#03050D">
+    <meta name="color-scheme" content="dark">
+
+    <title>AWNARA — Advanced Personal AI</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2303050D'/%3E%3Ccircle cx='32' cy='32' r='16' fill='%235B8CFF'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%2366E3FF'/%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap"
+        crossorigin
+    >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app" class="appShell" data-theme="dark">
+
+        <!-- ============ COSMIC BACKGROUND ============ -->
+        <div class="cosmicBackground" aria-hidden="true">
+            <div class="cosmicGradient cosmicGradient--one"></div>
+            <div class="cosmicGradient cosmicGradient--two"></div>
+            <div class="cosmicGradient cosmicGradient--three"></div>
+
+            <div class="starsLayer starsLayer--small"></div>
+            <div class="starsLayer starsLayer--medium"></div>
+            <div class="starsLayer starsLayer--large"></div>
+
+            <div class="ambientGrid"></div>
+
+            <div id="particleField" class="particleField"></div>
+        </div>
+
+        <!-- Backdrop used to dismiss the mobile drawer / context panel on tap.
+             Decorative only — keyboard users close via the toggle buttons or Escape. -->
+        <div id="mobileOverlay" class="mobileOverlay" aria-hidden="true"></div>
+
+        <!-- ============ TOPBAR ============ -->
+        <header class="topbar" role="banner">
+
+            <div class="topbar__left">
+                <button
+                    id="mobileMenuButton"
+                    class="iconButton topbar__menuButton"
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-controls="sidebar"
+                    aria-expanded="false"
+                >
+                    <span class="menuIcon" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </span>
+                </button>
+
+                <a class="brand" href="#chat" data-navigation-target="chat" aria-label="AWNARA home">
+                    <span class="brand__mark" aria-hidden="true">
+                        <span class="brand__markCore"></span>
+                    </span>
+                    <span class="brand__content">
+                        <span class="brand__name" translate="no">AWNARA</span>
+                        <span class="brand__subtitle">ADVANCED PERSONAL AI</span>
+                    </span>
+                </a>
+            </div>
+
+            <div class="topbar__center">
+                <div class="systemStatus">
+                    <span class="statusIndicator statusIndicator--online" aria-hidden="true"></span>
+                    <span class="systemStatus__label">SYSTEM ONLINE</span>
+                    <span id="topbarAiState" class="systemStatus__state" data-ai-state="idle">IDLE</span>
+                </div>
+            </div>
+
+            <div class="topbar__right">
+                <button id="themeToggle" class="iconButton" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+                    <span aria-hidden="true">◐</span>
+                </button>
+
+                <button
+                    id="contextToggle"
+                    class="iconButton"
+                    type="button"
+                    aria-label="Toggle intelligence panel"
+                    aria-controls="contextPanel"
+                    aria-expanded="true"
+                    title="Toggle intelligence panel"
+                >
+                    <span aria-hidden="true">◫</span>
+                </button>
+
+                <button
+                    id="profileButton"
+                    class="profileButton"
+                    type="button"
+                    aria-label="Open profile menu"
+                    aria-haspopup="menu"
+                    aria-controls="profileMenu"
+                    aria-expanded="false"
+                >
+                    <span class="profileButton__avatar" aria-hidden="true">A</span>
+                    <span class="profileButton__info">
+                        <span class="profileButton__name">Ali</span>
+                        <span class="profileButton__status">Personal Workspace</span>
+                    </span>
+                    <span class="profileButton__chevron" aria-hidden="true">˅</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="appLayout">
+
+            <!-- ============ SIDEBAR / NAVIGATION ============ -->
+            <aside id="sidebar" class="sidebar" aria-label="Primary navigation">
+
+                <div class="sidebar__header">
+                    <button id="newConversationButton" class="newConversationButton" type="button">
+                        <span class="newConversationButton__icon" aria-hidden="true">+</span>
+                        <span>New Conversation</span>
+                    </button>
+                </div>
+
+                <nav class="navigation" aria-label="AWNARA workspace navigation">
+
+                    <div class="navigationGroup">
+                        <h2 class="navigationLabel">WORKSPACE</h2>
+
+                        <button class="navigationItem navigationItem--active" type="button" data-navigation-target="chat" aria-current="page">
+                            <span class="navigationItem__icon" aria-hidden="true">◈</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">AI Chat</span>
+                                <span class="navigationItem__description">Talk with AWNARA</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem" type="button" data-navigation-target="memory">
+                            <span class="navigationItem__icon" aria-hidden="true">◌</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Memory</span>
+                                <span class="navigationItem__description">What AWNARA remembers</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem" type="button" data-navigation-target="projects">
+                            <span class="navigationItem__icon" aria-hidden="true">◇</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Projects</span>
+                                <span class="navigationItem__description">Your active projects</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="navigationGroup">
+                        <h2 class="navigationLabel">INTELLIGENCE</h2>
+
+                        <button class="navigationItem" type="button" data-navigation-target="agents">
+                            <span class="navigationItem__icon" aria-hidden="true">◎</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">AI Agents</span>
+                                <span class="navigationItem__description">Specialized intelligence</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem" type="button" data-navigation-target="tools">
+                            <span class="navigationItem__icon" aria-hidden="true">⌘</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Tools</span>
+                                <span class="navigationItem__description">Connected capabilities</span>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="navigationGroup navigationGroup--future">
+                        <h2 class="navigationLabel">FUTURE SYSTEMS</h2>
+
+                        <button class="navigationItem navigationItem--disabled" type="button" disabled>
+                            <span class="navigationItem__icon" aria-hidden="true">✦</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Learning</span>
+                                <span class="navigationItem__description">Personalized learning</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem navigationItem--disabled" type="button" disabled>
+                            <span class="navigationItem__icon" aria-hidden="true">⌬</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Research</span>
+                                <span class="navigationItem__description">Deep intelligence</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem navigationItem--disabled" type="button" disabled>
+                            <span class="navigationItem__icon" aria-hidden="true">◇</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Coding</span>
+                                <span class="navigationItem__description">Build with AWNARA</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem navigationItem--disabled" type="button" disabled>
+                            <span class="navigationItem__icon" aria-hidden="true">⚙</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Automations</span>
+                                <span class="navigationItem__description">Intelligent workflows</span>
+                            </span>
+                        </button>
+
+                        <button class="navigationItem navigationItem--disabled" type="button" disabled>
+                            <span class="navigationItem__icon" aria-hidden="true">☰</span>
+                            <span class="navigationItem__content">
+                                <span class="navigationItem__title">Settings</span>
+                                <span class="navigationItem__description">Configure AWNARA</span>
+                            </span>
+                        </button>
+                    </div>
+
+                </nav>
+
+                <section class="conversationHistory" aria-labelledby="conversationHistoryTitle">
+                    <div class="conversationHistory__header">
+                        <h2 id="conversationHistoryTitle" class="navigationLabel">RECENT</h2>
+                        <button id="clearHistoryButton" class="textButton" type="button">Clear</button>
+                    </div>
+
+                    <ul id="conversationHistory" class="conversationHistory__list">
+                        <li class="historyItem">
+                            <button class="historyItem__button" type="button" data-conversation-id="welcome">
+                                <span class="historyItem__icon" aria-hidden="true">◈</span>
+                                <span class="historyItem__content">
+                                    <span class="historyItem__title">Welcome to AWNARA</span>
+                                    <time class="historyItem__time" datetime="2026-07-24T00:00:00Z">Just now</time>
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </section>
+
+                <footer class="sidebar__footer">
+                    <div class="systemVersion">
+                        <span class="systemVersion__indicator" aria-hidden="true"></span>
+                        <span translate="no">AWNARA CORE</span>
+                        <span class="systemVersion__version">v0.1.0</span>
+                    </div>
+                </footer>
+            </aside>
+
+            <!-- ============ MAIN WORKSPACE ============ -->
+            <main id="mainWorkspace" class="mainWorkspace">
+
+                <header class="workspaceHeader">
+                    <div class="workspaceHeader__content">
+                        <p class="workspaceHeader__eyebrow">PERSONAL INTELLIGENCE SYSTEM</p>
+                        <h1 id="workspaceTitle" class="workspaceHeader__title">AI Chat</h1>
+                    </div>
+                    <div class="workspaceHeader__actions">
+                        <button id="focusModeButton" class="iconButton" type="button" aria-label="Toggle focus mode" aria-pressed="false" title="Toggle focus mode">
+                            <span aria-hidden="true">⛶</span>
+                        </button>
+                    </div>
+                </header>
+
+                <section id="chatSection" class="chatWorkspace" aria-labelledby="workspaceTitle">
+
+                    <!-- AWNARA CORE — data-state drives the active animation/state in script.js + style.css.
+                         Valid values: idle | listening | thinking | processing | executing | responding | success | error -->
+                    <section
+                        id="awnaraCore"
+                        class="awnaraCore"
+                        data-state="idle"
+                        aria-labelledby="coreStateLabel"
+                        aria-describedby="coreStateDescription"
+                    >
+                        <div class="coreAura coreAura--outer" aria-hidden="true"></div>
+                        <div class="coreAura coreAura--middle" aria-hidden="true"></div>
+
+                        <div class="coreOrbit coreOrbit--one" aria-hidden="true"><span class="coreOrbit__particle"></span></div>
+                        <div class="coreOrbit coreOrbit--two" aria-hidden="true"><span class="coreOrbit__particle"></span></div>
+                        <div class="coreOrbit coreOrbit--three" aria-hidden="true"><span class="coreOrbit__particle"></span></div>
+
+                        <div class="coreEnergyRing coreEnergyRing--one" aria-hidden="true"></div>
+                        <div class="coreEnergyRing coreEnergyRing--two" aria-hidden="true"></div>
+
+                        <div class="coreOrb" aria-hidden="true">
+                            <div class="coreOrb__surface"></div>
+                            <div class="coreOrb__energy"><span></span><span></span><span></span></div>
+                            <div class="coreOrb__highlight"></div>
+                        </div>
+
+                        <div class="coreState">
+                            <span id="coreStateLabel" class="coreState__label">IDLE</span>
+                            <span id="coreStateDescription" class="coreState__description">Ready for you</span>
+                        </div>
+                    </section>
+
+                    <section id="welcomeView" class="welcomeView" aria-labelledby="welcomeTitle">
+                        <div class="welcomeView__content">
+                            <p class="welcomeView__eyebrow">GOOD EVENING, ALI</p>
+                            <h2 id="welcomeTitle" class="welcomeView__title">
+                                How can AWNARA <span>help you today?</span>
+                            </h2>
+                            <p class="welcomeView__description">
+                                Your personal intelligence system is ready.
+                                Ask a question, explore an idea, or start something new.
+                            </p>
+                        </div>
+
+                        <div class="suggestionGrid" aria-label="Suggested prompts">
+                            <button class="suggestionCard" type="button" data-suggestion="Help me plan my day">
+                                <span class="suggestionCard__icon" aria-hidden="true">◷</span>
+                                <span class="suggestionCard__content">
+                                    <span class="suggestionCard__title">Plan my day</span>
+                                    <span class="suggestionCard__description">Organize tasks and priorities</span>
+                                </span>
+                            </button>
+
+                            <button class="suggestionCard" type="button" data-suggestion="Help me learn something new">
+                                <span class="suggestionCard__icon" aria-hidden="true">✦</span>
+                                <span class="suggestionCard__content">
+                                    <span class="suggestionCard__title">Learn something</span>
+                                    <span class="suggestionCard__description">Explore a new topic</span>
+                                </span>
+                            </button>
+
+                            <button class="suggestionCard" type="button" data-suggestion="Help me build a project">
+                                <span class="suggestionCard__icon" aria-hidden="true">◇</span>
+                                <span class="suggestionCard__content">
+                                    <span class="suggestionCard__title">Build a project</span>
+                                    <span class="suggestionCard__description">Turn ideas into reality</span>
+                                </span>
+                            </button>
+
+                            <button class="suggestionCard" type="button" data-suggestion="Think through a complex problem with me">
+                                <span class="suggestionCard__icon" aria-hidden="true">◎</span>
+                                <span class="suggestionCard__content">
+                                    <span class="suggestionCard__title">Think with me</span>
+                                    <span class="suggestionCard__description">Work through a complex problem</span>
+                                </span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <div
+                        id="messageContainer"
+                        class="messageContainer"
+                        role="log"
+                        aria-label="Conversation messages"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                    ></div>
+
+                    <div id="aiActivityIndicator" class="aiActivityIndicator" hidden>
+                        <span class="aiActivityIndicator__avatar" aria-hidden="true"><span></span></span>
+                        <span class="aiActivityIndicator__content">
+                            <span class="aiActivityIndicator__name">AWNARA</span>
+                            <span id="activityText" class="aiActivityIndicator__text">Thinking</span>
+                            <span class="typingDots" aria-hidden="true"><span></span><span></span><span></span></span>
+                        </span>
+                    </div>
+
+                    <div class="composerWrapper">
+                        <form id="messageForm" class="messageComposer" action="#" method="post" novalidate>
+                            <label class="srOnly" for="messageInput">Message AWNARA</label>
+
+                            <div class="composer__top">
+                                <button id="attachmentButton" class="composerButton" type="button" aria-label="Attach files" aria-controls="filePreview" title="Attach files">
+                                    <span aria-hidden="true">+</span>
+                                </button>
+
+                                <textarea
+                                    id="messageInput"
+                                    name="message"
+                                    class="messageInput"
+                                    rows="1"
+                                    maxlength="10000"
+                                    placeholder="Ask AWNARA anything..."
+                                    aria-describedby="messageHelp characterCounter"
+                                    aria-required="true"
+                                    aria-invalid="false"
+                                    autocomplete="off"
+                                    spellcheck="true"
+                                    dir="auto"
+                                ></textarea>
+
+                                <button id="voiceButton" class="composerButton" type="button" aria-label="Start voice interaction" aria-pressed="false" title="Voice interaction">
+                                    <span class="voiceIcon" aria-hidden="true">◉</span>
+                                </button>
+
+                                <button id="sendButton" class="sendButton" type="submit" aria-label="Send message" title="Send message">
+                                    <span aria-hidden="true">↑</span>
+                                </button>
+                            </div>
+
+                            <div class="composer__bottom">
+                                <span id="messageHelp" class="composerHint">
+                                    <kbd>Enter</kbd> to send
+                                    <span aria-hidden="true">·</span>
+                                    <kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line
+                                </span>
+
+                                <output id="characterCounter" class="characterCounter" form="messageForm" aria-live="polite">0 / 10000</output>
+                            </div>
+                        </form>
+
+                        <p class="composerDisclaimer">
+                            AWNARA is a prototype. Responses are simulated by the backend. Attachments send names and sizes only.
+                        </p>
+                    </div>
+
+                </section>
+
+                <section id="dynamicSection" class="dynamicSection" aria-labelledby="dynamicSectionTitle" hidden>
+                    <div class="dynamicSection__empty">
+                        <span class="dynamicSection__icon" aria-hidden="true">✦</span>
+                        <h2 id="dynamicSectionTitle" class="dynamicSection__title">Section</h2>
+                        <p id="dynamicSectionDescription" class="dynamicSection__description">This AWNARA module is ready to evolve.</p>
+                    </div>
+                </section>
+            </main>
+
+            <!-- ============ CONTEXT PANEL ============ -->
+            <aside id="contextPanel" class="contextPanel" aria-label="AWNARA intelligence context">
+
+                <header class="contextPanel__header">
+                    <div>
+                        <p class="contextPanel__eyebrow">LIVE SYSTEM</p>
+                        <h2 class="contextPanel__title">Intelligence</h2>
+                    </div>
+                    <button id="closeContextButton" class="iconButton" type="button" aria-label="Close intelligence panel">×</button>
+                </header>
+
+                <section class="contextSection" aria-labelledby="aiStatusTitle">
+                    <div class="contextSection__header">
+                        <h3 id="aiStatusTitle" class="contextSection__title">AI STATUS</h3>
+                        <span class="liveBadge">LIVE</span>
+                    </div>
+
+                    <div class="statusCard">
+                        <div class="statusCard__main">
+                            <span class="statusIndicator statusIndicator--online" aria-hidden="true"></span>
+                            <span class="statusCard__label">ONLINE</span>
+                        </div>
+                        <p class="statusCard__description">AWNARA Core operational</p>
+                    </div>
+
+                    <div class="currentState">
+                        <span class="currentState__label">CURRENT STATE</span>
+                        <div class="currentState__value">
+                            <span id="contextAiStateIndicator" class="stateDot" aria-hidden="true"></span>
+                            <span id="contextAiState" class="currentState__name" data-ai-state="idle">IDLE</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="contextSection" aria-labelledby="memoryTitle">
+                    <div class="contextSection__header">
+                        <h3 id="memoryTitle" class="contextSection__title">MEMORY</h3>
+                        <button class="sectionAction" type="button" data-action="view-memory">View</button>
+                    </div>
+
+                    <ul class="memoryList">
+                        <li class="memoryItem">
+                            <span class="memoryItem__icon" aria-hidden="true">◌</span>
+                            <div class="memoryItem__content">
+                                <span class="memoryItem__title">Short-Term Memory</span>
+                                <span class="memoryItem__value">Active conversation</span>
+                            </div>
+                            <span class="memoryItem__status memoryItem__status--active" aria-label="Active"></span>
+                        </li>
+
+                        <li class="memoryItem">
+                            <span class="memoryItem__icon" aria-hidden="true">◇</span>
+                            <div class="memoryItem__content">
+                                <span class="memoryItem__title">Long-Term Memory</span>
+                                <span class="memoryItem__value">Available</span>
+                            </div>
+                            <span class="memoryItem__status memoryItem__status--available" aria-label="Available"></span>
+                        </li>
+
+                        <li class="memoryItem">
+                            <span class="memoryItem__icon" aria-hidden="true">▱</span>
+                            <div class="memoryItem__content">
+                                <span class="memoryItem__title">Project Memory</span>
+                                <span class="memoryItem__value">AWNARA</span>
+                            </div>
+                            <span class="memoryItem__status memoryItem__status--active" aria-label="Active"></span>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="contextSection" aria-labelledby="toolsTitle">
+                    <div class="contextSection__header">
+                        <h3 id="toolsTitle" class="contextSection__title">TOOLS</h3>
+                        <span class="contextSection__count">04</span>
+                    </div>
+
+                    <div class="toolsGrid">
+                        <button class="toolCard" type="button" data-tool="web">
+                            <span class="toolCard__icon" aria-hidden="true">◎</span>
+                            <span class="toolCard__name">Web</span>
+                            <span class="toolCard__status">Planned</span>
+                        </button>
+
+                        <button class="toolCard" type="button" data-tool="calculator">
+                            <span class="toolCard__icon" aria-hidden="true">∑</span>
+                            <span class="toolCard__name">Calculator</span>
+                            <span class="toolCard__status">Planned</span>
+                        </button>
+
+                        <button class="toolCard" type="button" data-tool="files">
+                            <span class="toolCard__icon" aria-hidden="true">▱</span>
+                            <span class="toolCard__name">Files</span>
+                            <span class="toolCard__status">Planned</span>
+                        </button>
+
+                        <button class="toolCard" type="button" data-tool="code">
+                            <span class="toolCard__icon" aria-hidden="true">&lt;/&gt;</span>
+                            <span class="toolCard__name">Code</span>
+                            <span class="toolCard__status">Planned</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="contextSection contextSection--activity" aria-labelledby="activityTitle">
+                    <div class="contextSection__header">
+                        <h3 id="activityTitle" class="contextSection__title">ACTIVITY</h3>
+                        <button id="clearActivityButton" class="sectionAction" type="button">Clear</button>
+                    </div>
+
+                    <ol id="activityLog" class="activityLog" aria-live="polite" aria-relevant="additions">
+                        <li class="activityItem">
+                            <span class="activityItem__indicator activityItem__indicator--success" aria-hidden="true"></span>
+                            <div class="activityItem__content">
+                                <span class="activityItem__title">System initialized</span>
+                                <time class="activityItem__time" datetime="2026-07-24T00:00:00Z">Just now</time>
+                            </div>
+                        </li>
+
+                        <li class="activityItem">
+                            <span class="activityItem__indicator activityItem__indicator--active" aria-hidden="true"></span>
+                            <div class="activityItem__content">
+                                <span class="activityItem__title">Waiting for input</span>
+                                <time class="activityItem__time" datetime="2026-07-24T00:00:00Z">Now</time>
+                            </div>
+                        </li>
+                    </ol>
+                </section>
+
+                <footer class="contextPanel__footer">
+                    <div class="coreHealth">
+                        <span class="coreHealth__label">CORE HEALTH</span>
+                        <div id="coreHealthBar" class="coreHealth__bar" role="progressbar" aria-label="AWNARA Core health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                            <span class="coreHealth__progress" aria-hidden="true"></span>
+                        </div>
+                        <output id="coreHealthValue" class="coreHealth__value">100%</output>
+                    </div>
+                </footer>
+            </aside>
+
+        </div>
+
+        <!-- ============ MESSAGE TEMPLATES ============
+             script.js clones these for each new chat turn instead of building
+             message markup with string concatenation / innerHTML. -->
+        <template id="userMessageTemplate">
+            <article class="message message--user">
+                <span class="message__avatar" aria-hidden="true">A</span>
+                <div class="message__body">
+                    <div class="message__meta">
+                        <span class="message__sender">You</span>
+                        <time class="message__time"></time>
+                    </div>
+                    <p class="message__text"></p>
+                </div>
+            </article>
+        </template>
+
+        <template id="aiMessageTemplate">
+            <article class="message message--ai">
+                <span class="message__avatar message__avatar--ai" aria-hidden="true">◈</span>
+                <div class="message__body">
+                    <div class="message__meta">
+                        <span class="message__sender">AWNARA</span>
+                        <time class="message__time"></time>
+                    </div>
+                    <p class="message__text"></p>
+                    <div class="message__actions">
+                        <button class="message__actionButton" type="button" data-action="copy" aria-label="Copy response">Copy</button>
+                    </div>
+                </div>
+            </article>
+        </template>
+
+        <input
+            id="fileInput"
+            name="attachments"
+            type="file"
+            multiple
+            hidden
+            accept="image/*,.pdf,.txt,.md,.doc,.docx,.csv,.json,.html,.css,.js"
+        >
+
+        <section id="filePreview" class="filePreview" aria-labelledby="filePreviewTitle" hidden>
+            <div class="filePreview__header">
+                <h2 id="filePreviewTitle" class="filePreview__title">ATTACHMENTS</h2>
+                <button id="clearFilesButton" class="iconButton" type="button" aria-label="Clear selected files">×</button>
+            </div>
+            <ul id="fileList" class="filePreview__list"></ul>
+        </section>
+
+        <ul id="profileMenu" class="profileMenu" role="menu" hidden aria-label="Profile menu">
+            <li class="profileMenu__header" role="presentation">
+                <span class="profileMenu__avatar" aria-hidden="true">A</span>
+                <span>
+                    <strong>Ali</strong>
+                    <span>Personal Workspace</span>
+                </span>
+            </li>
+
+            <li role="none">
+                <button class="profileMenu__item" type="button" role="menuitem" data-profile-action="settings">Settings</button>
+            </li>
+
+            <li role="none">
+                <button class="profileMenu__item" type="button" role="menuitem" data-profile-action="preferences">Preferences</button>
+            </li>
+        </ul>
+
+        <div id="errorRegion" class="srOnly" role="alert" aria-atomic="true"></div>
+        <div id="toastContainer" class="toastContainer" aria-live="polite" aria-atomic="true"></div>
+        <div id="liveRegion" class="srOnly" aria-live="polite" aria-atomic="true"></div>
+
+    </div>
+
+    <script src="config.js" defer></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
